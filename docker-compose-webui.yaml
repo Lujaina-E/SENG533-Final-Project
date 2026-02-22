@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  registry:
+    image: descartesresearch/teastore-registry
+    platform: linux/amd64
+    mem_limit: 2g
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/tools.descartes.teastore.registry/ || exit 1"]
+      interval: 15s
+      retries: 10
+      start_period: 60s
+    restart: unless-stopped
+
+  db:
+    image: descartesresearch/teastore-db
+    platform: linux/amd64
+    mem_limit: 1g
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: teastore
+      MYSQL_USER: teastore
+      MYSQL_PASSWORD: teastore
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 10s
+      retries: 10
+      start_period: 60s
+    restart: unless-stopped
+
+  persistence:
+    image: descartesresearch/teastore-persistence
+    platform: linux/amd64
+    mem_limit: 2.5g
+    environment:
+      HOST_NAME: "persistence"
+      REGISTRY_HOST: "registry"
+      DB_HOST: "db"
+      DB_PORT: "3306"
+      DB_USER: "teastore"
+      DB_PASSWORD: "teastore"
+    depends_on:
+      - registry
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/tools.descartes.teastore.persistence/ || exit 1"]
+      interval: 15s
+      retries: 10
+      start_period: 90s
+    restart: unless-stopped
+
+  auth:
+    image: descartesresearch/teastore-auth
+    platform: linux/amd64
+    mem_limit: 1g
+    environment:
+      HOST_NAME: "auth"
+      REGISTRY_HOST: "registry"
+      DB_HOST: "db"
+      DB_PORT: "3306"
+      DB_USER: "teastore"
+      DB_PASSWORD: "teastore"
+    depends_on:
+      - registry
+      - persistence
+    restart: unless-stopped
+
+
+  image:
+    image: descartesresearch/teastore-image
+    platform: linux/amd64
+    mem_limit: 1g
+    environment:
+      HOST_NAME: "image"
+      REGISTRY_HOST: "registry"
+      DB_HOST: "db"
+      DB_PORT: "3306"
+      DB_USER: "teastore"
+      DB_PASSWORD: "teastore"
+    depends_on:
+      - registry
+      - persistence
+    restart: unless-stopped
+
+  recommender:
+    image: descartesresearch/teastore-recommender
+    platform: linux/amd64
+    mem_limit: 1g
+    environment:
+      HOST_NAME: "recommender"
+      REGISTRY_HOST: "registry"
+      DB_HOST: "db"
+      DB_PORT: "3306"
+      DB_USER: "teastore"
+      DB_PASSWORD: "teastore"
+    depends_on:
+      - registry
+      - persistence
+    restart: unless-stopped
+
+  webui:
+    image: descartesresearch/teastore-webui
+    platform: linux/amd64
+    mem_limit: 2g
+    container_name: webui
+    ports:
+      - "8080:8080"
+    environment:
+      HOST_NAME: "webui"
+      REGISTRY_HOST: "registry"
+    depends_on:
+      - registry
+      - persistence
+      - auth
+      - image
+      - recommender
+    restart: unless-stopped
