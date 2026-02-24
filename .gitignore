@@ -1,0 +1,11 @@
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md
+#env file
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
