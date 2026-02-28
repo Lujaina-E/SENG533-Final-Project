@@ -9,3 +9,9 @@
 __pycache__/
 *.pyc
 *.pyo
+
+# csv files
+*.csv
+
+#images 
+*.png

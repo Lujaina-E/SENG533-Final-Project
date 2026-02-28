@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+
+  # ── TeaStore ───────────────────────────────────────────────────────────────
+  teastore-registry:
+    image: descartesresearch/teastore-registry:latest
+    ports:
+      - "10000:8080"
+
+  teastore-db:
+    image: descartesresearch/teastore-db:latest
+    # No ports exposed — DB only needs to be reachable internally by persistence
+    depends_on:
+      - teastore-registry
+
+  teastore-persistence:
+    image: descartesresearch/teastore-persistence:latest
+    environment:
+      HOST_NAME: "teastore-persistence"
+      REGISTRY_HOST: "teastore-registry"
+      REGISTRY_PORT: "10000"
+      DB_HOST: "teastore-db"
+    ports:
+      - "1111:8080"
+    depends_on:
+      - teastore-db
+      - teastore-registry
+
+  # ── Monitoring ─────────────────────────────────────────────────────────────
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8090:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    privileged: true
+    command:
+      - "--docker_only=true"
+      - "--housekeeping_interval=10s"
+    depends_on:
+      - teastore-persistence
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    depends_on:
+      - cadvisor
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_INSTALL_PLUGINS=
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana-storage:
