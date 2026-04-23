@@ -171,11 +171,7 @@ CPU/memory snapshots via `docker stats` were taken at 0:40, 1:10, and 1:40 into 
 
 | Service        | Utilization | Notable Behaviour |
 |----------------|-------------|-------------------|
-| WebUI          | 99.3%       | Primary bottleneck |
-| Image Provider | High        | Avg 20,779ms at 200 users; 100% SLA violation (>3s) |
-| Authentication | Low         | 0% error rate across all load levels |
-| Persistence    | Low         | Response time plateaued ~26ms after 50 users |
-| Recommender    | Moderate    | CPU spike at 100 users, stabilised at steady state |
+
 
 ---
 
