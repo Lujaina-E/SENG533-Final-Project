@@ -199,6 +199,7 @@ Utilization = (Throughput × (Response_time / 1000)) / (1 + Throughput × (Respo
 | 500   | 25         | 5 min    | 3    |
 | 1000  | 50         | 5 min    | 3    |
 
+
 ## Spike Test Parameters
 
 | Users | Spawn Rate | Duration | Runs |
@@ -209,3 +210,12 @@ Utilization = (Throughput × (Response_time / 1000)) / (1 + Throughput × (Respo
 | 2000  | 300        | 4 min    | 3    |
 | 100   | 10         | 3 min    | 3    |
 | 3000  | 500        | 4 min    | 3    |
+
+
+```bash
+# docker command to get CPU utilization stats every 15 seconds
+while ($true) {
+>>     docker stats --no-stream | Out-File -Append stats_stress1.txt
+>>     Start-Sleep -Seconds 15
+>> }
+```
