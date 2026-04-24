@@ -168,14 +168,6 @@ CPU/memory snapshots via `docker stats` were taken at 0:40, 1:10, and 1:40 into 
 
 ---
 
-## Key Findings
-
-| Service        | Utilization | Notable Behaviour |
-|----------------|-------------|-------------------|
-
-
----
-
 ## Utilization Formula
 
 ```
