@@ -22,6 +22,7 @@ This project evaluates the runtime performance of the [TeaStore](https://github.
 ├── locust_auth.py                  # Authentication service load test
 ├── locust_image.py                 # Image Provider load test
 ├── locust_recommender.py           # Recommender service load test
+├── locust_test.py                  # Round 2 tests (includes all services)
 ├── docker-compose-webui.yaml       # Full stack + monitoring deployment
 ├── docker-compose-image.yaml       # Image Provider isolated deployment
 ├── generate_image_graphs.py        # Graph generation for Image Provider results
