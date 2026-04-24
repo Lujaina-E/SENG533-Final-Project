@@ -181,3 +181,31 @@ CPU/memory snapshots via `docker stats` were taken at 0:40, 1:10, and 1:40 into 
 ```
 Utilization = (Throughput × (Response_time / 1000)) / (1 + Throughput × (Response_time / 1000))
 ```
+
+## Stress Test Parameters
+
+| Users | Spawn Rate | Duration | Runs |
+|-------|------------|----------|------|
+| 10    | 2          | 2 min    | 3    |
+| 25    | 5          | 2 min    | 3    |
+| 50    | 10         | 2 min    | 3    |
+| 75    | 10         | 2 min    | 3    |
+| 100   | 10         | 2 min    | 3    |
+| 150   | 10         | 2 min    | 3    |
+| 200   | 10         | 2 min    | 3    |
+| 250   | 10         | 2 min    | 3    |
+| 300   | 15         | 2 min    | 3    |
+| 400   | 15         | 2 min    | 3    |
+| 500   | 25         | 5 min    | 3    |
+| 1000  | 50         | 5 min    | 3    |
+
+## Spike Test Parameters
+
+| Users | Spawn Rate | Duration | Runs |
+|-------|------------|----------|------|
+| 100   | 10         | 3 min    | 3    |
+| 1000  | 200        | 4 min    | 3    |
+| 100   | 10         | 3 min    | 3    |
+| 2000  | 300        | 4 min    | 3    |
+| 100   | 10         | 3 min    | 3    |
+| 3000  | 500        | 4 min    | 3    |
